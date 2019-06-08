@@ -4,8 +4,10 @@
     "Leon Timmermans"
   ],
   "build-depends" : [ ],
-  "depends" : [ ],
-  "description" : "blah blah blah",
+  "depends" : [
+    "Getopt::Long:ver<0.1.3+>"
+  ],
+  "description" : "A Getopt::Long extension for subcommands",
   "license" : "Artistic-2.0",
   "name" : "Getopt::Subcommands",
   "perl" : "6.c",
