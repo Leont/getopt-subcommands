@@ -2,6 +2,7 @@ use v6.c;
 unit class Getopt::Subcommands:ver<0.0.1>:auth<cpan:LEONT>;
 
 use Getopt::Long :functions;
+use Text::Levenshtein::Damerau;
 
 my role Subcommand {
 	has Str:D $.name is required;
@@ -27,7 +28,12 @@ our sub RUN-MAIN(Sub $main, $, *%) is export {
 		return call-with-getopt($callback, @*ARGS, %options, :overwrite).sink;
 	}
 	elsif $command {
-		die "Unknown subcommand $command, known commands are { %commands.keys.join(', ') }";
+		if %commands.keys.grep({ dld($command, $_) < 3 }) -> @alternatives {
+			die Getopt::Long::Exception.new: "Unknown subcommand $command, did you mean { @alternatives.sort.join(' or ') }";
+		}
+		else {
+			die Getopt::Long::Exception.new: "Unknown subcommand $command, known commands are { %commands.keys.sort.join(', ') }";
+		}
 	}
 	else {
 		die Getopt::Long::Exception.new: "No command given";
