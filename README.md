@@ -1,17 +1,25 @@
+[![Build Status](https://travis-ci.org/Leont/getopt-subcommands.svg?branch=master)](https://travis-ci.org/Leont/getopt-subcommands)
+
 NAME
 ====
 
-Getopt::Subcommands - blah blah blah
+Getopt::Subcommands - A Getopt::Long extension for subcommands
 
 SYNOPSIS
 ========
 
     use Getopt::Subcommands;
 
+    multi MAIN(*@files, Bool :$dry-run) is command<frobnicate> { ... }
+
+    multi MAIN(:$fuzzy) is command<unfrobnicate> { ... }
+
+    multi MAIN(*@args) is default { ... }
+
 DESCRIPTION
 ===========
 
-Getopt::Subcommands is ...
+Getopt::Subcommands is an extension to Getopt::Long that facilitates writing programs with multiple subcommands. It dispatches based on the first argument.
 
 AUTHOR
 ======
