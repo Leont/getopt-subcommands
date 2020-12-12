@@ -13,7 +13,7 @@
   "name" : "Getopt::Subcommands",
   "perl" : "6.c",
   "provides" : {
-    "Getopt::Subcommands" : "lib/Getopt/Subcommands.pm6"
+    "Getopt::Subcommands" : "lib/Getopt/Subcommands.rakumod"
   },
   "resources" : [ ],
   "source-url" : "https://github.com/Leont/getopt-subcommands.git",
