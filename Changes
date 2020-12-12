@@ -1,6 +1,8 @@
 Revision history for Getopt-Subcommands
 
 {{$NEXT}}
+
+0.0.2  2020-12-12T18:46:35+01:00
     - Adapt to Getopt::Long 0.3.0
 
 0.0.1  2019-12-22T16:49:06+01:00
