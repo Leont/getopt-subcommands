@@ -39,7 +39,7 @@ our sub RUN-MAIN(Sub $main, $, *%) is export {
 		die Getopt::Long::Exception.new: "No command given";
 	}
 	CATCH {
-		when Getopt::Long::Exceptional {
+		when Getopt::Long::Exception {
 			note "$program-name: {.message}";
 			&*EXIT(IntStr.new(2, .message));
 		}
