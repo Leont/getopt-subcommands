@@ -6,3 +6,4 @@
 /resources/*.dylib
 .precomp/
 /Getopt-Subcommands-*
+test.pl
