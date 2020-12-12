@@ -21,11 +21,11 @@ our sub RUN-MAIN(Sub $main, $, *%) is export {
 	$program-name ~= ' ' ~ $command if $command;
 
 	if %commands{$command} -> $callback {
-		return call-with-getopt($callback, @*ARGS, %options, :overwrite).sink;
+		return call-with-getopt($callback, @*ARGS, %options).sink;
 	}
 	elsif $main.candidates.first(*.can('default')) -> $callback {
 		@*ARGS = @orig-args;
-		return call-with-getopt($callback, @*ARGS, %options, :overwrite).sink;
+		return call-with-getopt($callback, @*ARGS, %options).sink;
 	}
 	elsif $command {
 		if %commands.keys.grep({ dld($command, $_) < 3 }) -> @alternatives {
