@@ -23,17 +23,16 @@ multi trait_mod:<is>(Sub $sub, Bool :$fallback!) is export(:DEFAULT :traits) {
 }
 
 our sub RUN-MAIN(Sub $main, $, *%) is export(:DEFAULT :MAIN :RUN-MAIN) {
-	my %options = %*SUB-MAIN-OPTS // {};
 	my @orig-args = @*ARGS;
 	my $command = @*ARGS.shift;
 	my $program-name = $command ?? "$*PROGRAM $command" !! $*PROGRAM;
 
 	if %commands{$command} -> $callback {
-		return call-with-getopt($callback, @*ARGS, %options);
+		return call-with-getopt($callback, @*ARGS);
 	}
 	elsif &fallback {
 		@*ARGS = @orig-args;
-		return call-with-getopt(&fallback, @*ARGS, %options);
+		return call-with-getopt(&fallback, @*ARGS);
 	}
 	elsif $command {
 		if %commands.keys.grep({ dld($command, $_) < 3 }) -> @alternatives {
