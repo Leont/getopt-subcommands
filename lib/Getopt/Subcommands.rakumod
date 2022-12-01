@@ -4,28 +4,36 @@ unit class Getopt::Subcommands:ver<0.0.2>:auth<cpan:LEONT>;
 use Getopt::Long :functions;
 use Text::Levenshtein::Damerau;
 
-my role Subcommand {
-	has Str:D $.name is required;
+my %commands;
+my &fallback;
+
+# A noop but without this Raku will not run RUN-MAIN
+proto MAIN(|) is export(:DEFAULT :MAIN) {*}
+
+multi trait_mod:<is>(Sub $sub, Str :$command!) is export(:DEFAULT :traits) {
+	%commands{$command} = $sub;
 }
 
-multi sub trait_mod:<is>(Sub $sub, Str :$command!) is export {
-	$sub does Subcommand($command);
+multi trait_mod:<is>(Sub $sub, Bool :$command!) is export(:DEFAULT :traits) {
+	%commands{$sub.name} = $sub;
 }
 
-our sub RUN-MAIN(Sub $main, $, *%) is export {
+multi trait_mod:<is>(Sub $sub, Bool :$fallback!) is export(:DEFAULT :traits) {
+	&fallback = $sub;
+}
+
+our sub RUN-MAIN(Sub $main, $, *%) is export(:DEFAULT :MAIN :RUN-MAIN) {
 	my %options = %*SUB-MAIN-OPTS // {};
-	my %commands = $main.candidates.grep(Subcommand).map: { $^sub.name => $sub };
-	my $program-name = $*PROGRAM;
 	my @orig-args = @*ARGS;
 	my $command = @*ARGS.shift;
-	$program-name ~= ' ' ~ $command if $command;
+	my $program-name = $command ?? "$*PROGRAM $command" !! $*PROGRAM;
 
 	if %commands{$command} -> $callback {
-		return call-with-getopt($callback, @*ARGS, %options).sink;
+		return call-with-getopt($callback, @*ARGS, %options);
 	}
-	elsif $main.candidates.first(*.can('default')) -> $callback {
+	elsif &fallback {
 		@*ARGS = @orig-args;
-		return call-with-getopt($callback, @*ARGS, %options).sink;
+		return call-with-getopt(&fallback, @*ARGS, %options);
 	}
 	elsif $command {
 		if %commands.keys.grep({ dld($command, $_) < 3 }) -> @alternatives {
@@ -56,15 +64,17 @@ Getopt::Subcommands - A Getopt::Long extension for subcommands
 
  use Getopt::Subcommands;
 
- multi MAIN(*@files, Bool :$dry-run) is command<frobnicate> { ... }
+ sub frobnicate(*@files, Bool :$dry-run) is command { ... }
  
- multi MAIN(:$fuzzy) is command<unfrobnicate> { ... }
+ sub unfrobnicate(:$fuzzy) is command { ... }
 
- multi MAIN(*@args) is default { ... }
+ sub other($subcommand?, *@args) is fallback { ... }
 
 =head1 DESCRIPTION
 
 Getopt::Subcommands is an extension to Getopt::Long that facilitates writing programs with multiple subcommands. It dispatches based on the first argument.
+
+It can be used by using two traits on the subs: C<is command> and C<is fallback>. The former can optionally take the name of the subcommand as an argument, but will default to the name of the sub. The latter will be called if no suitable subcommand can be found or if none is given.
 
 =head1 AUTHOR
 

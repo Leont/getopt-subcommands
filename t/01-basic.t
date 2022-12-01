@@ -2,11 +2,9 @@
 use v6.c;
 use Test;
 
-use Getopt::Subcommands;
+unit package Namespace;
 
-my class ExitException {
-	has Int $.value;
-}
+use Getopt::Subcommands;
 
 sub run(&MAIN, *@args) {
 	my @*ARGS = @args;
@@ -15,11 +13,11 @@ sub run(&MAIN, *@args) {
 	RUN-MAIN(&MAIN, Any);
 }
 
-module Foo {
-	multi MAIN(:$foo) is command<foo> {
+package Foo {
+	sub foo (:$foo) is command {
 		is($foo, 'bar', 'Got bar');
 	}
-	multi MAIN(:$baz) is command<bar> {
+	sub bar (:$baz) is command {
 		is($baz, val('1'), 'Got 1');
 	}
 	subtest 'First', {
