@@ -1,5 +1,5 @@
 use v6.c;
-unit class Getopt::Subcommands:ver<0.0.2>:auth<cpan:LEONT>;
+unit class Getopt::Subcommands:ver<0.1.0>:auth<cpan:LEONT>;
 
 use Getopt::Long :functions;
 use Text::Levenshtein::Damerau;

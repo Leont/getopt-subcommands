@@ -1,6 +1,8 @@
 Revision history for Getopt-Subcommands
 
 {{$NEXT}}
+
+0.1.0  2022-12-01T18:48:39+01:00
     - Change trait to use subname by default
 
 0.0.2  2020-12-12T18:46:35+01:00
